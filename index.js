@@ -20,8 +20,7 @@ function send_score(score_arr){
     .drawText(10, 225, score_arr[0])
     .fill('rgb(15, 100, 250)')
     .drawText(162, 225, score_arr[1])
-    .write('./resources/chgk/score.png', function (err) {
-      console.error(err);
+    .write('./resources/chgk/score.png', function() {
       text_channel.send(undefined, {files: ['./resources/chgk/score.png']});
     });
   } else {
@@ -32,8 +31,7 @@ function send_score(score_arr){
     .drawText(10, 225, score_arr[0])
     .fill('rgb(255, 255, 255)')
     .drawText(162, 225, score_arr[1])
-    .write('./resources/chgk/score.png', function (err) {
-      console.error(err);
+    .write('./resources/chgk/score.png', function() {
       text_channel.send(undefined, {files: ['./resources/chgk/score.png']});
     });
   }
