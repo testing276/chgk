@@ -2,14 +2,15 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
 const gm = require('gm');
-const token = 'MzM5NDE2MDI1ODgxNzcyMDMy.DGCmtw.xTlgAi_xl-9O5k62GXQmLi-brLs';
+const token = 'MzczODayYTE3NjW4MGMzODg4.DNZSHQ.NX9Zd_25Y41cNA57GIrMdWKjbh3';
 
 var timerId;
 
-var admins = ['Daniel#6536', 'testing#6131'];
+var admins = ['Danila#1516', 'testing#6131'];
 var voice_channel = '💬 General';
 var text_channel = 'chat';
-var guild_name = 'Метаконференция';
+var guild_name = 'META';
+var vopt = { seek: 0, volume: 1, passes: 0 };
 
 function send_score(score_arr){
   if (score_arr[0] > score_arr[1]) {
@@ -49,23 +50,30 @@ client.on('message', message => {
   voice_channel.join().then(connection => {
     if (/^(?:5)$/.test(message.content)) {
       text_channel.send(undefined, {files: ['./resources/chgk/WhatWhereWhen.png']})
-        const dispatcher = connection.playFile('./resources/chgk/nachalo.mp3');
+        const dispatcher = connection.playFile('./resources/chgk/nachalo.mp3',{seek:0,volume: 0.3,passes:1});
         dispatcher.on("end", end => {
-          connection.playFile('./resources/chgk/Thus_Sprach_Zarathustra.mp3');
+          connection.playFile('./resources/chgk/Homage_To_The_Mountain.mp3',{seek:0,volume: 0.3,passes:1});
         });
     } else if (/^(?:1)$/.test(message.content)) {
       text_channel.send(undefined, {files: ['./resources/chgk/ruletka.jpg']})
-      connection.playFile('./resources/chgk/Volchok.mp3');
+      connection.playFile('./resources/chgk/Volchok.mp3',{seek:0,volume: 0.3,passes:1});
     } else if (/^(?:2)$/.test(message.content)) {
-      connection.playFile('./resources/chgk/gong.mp3');
+     const dispatcher = connection.playFile('./resources/chgk/gong.mp3',{seek:0,volume: 0.3,passes:1});
+     dispatcher.on('start', start => {
+       connection.player.streamingData.pausedTime = 0;
+    });
+     
     } else if (/^(?:3)$/.test(message.content)) {
-      const dispatcher = connection.playFile('./resources/chgk/Signal_2.mp3');
+      const dispatcher = connection.playFile('./resources/chgk/Signal_2.mp3',{seek:0,volume: 0.3,passes:1});
+           dispatcher.on('start', start => {
+       connection.player.streamingData.pausedTime = 0;
+    });
       dispatcher.on("end", end => {
         timerId = setTimeout(function() {
-          const dispatcher2 = connection.playFile('./resources/chgk/Signal_1.mp3');
+          const dispatcher2 = connection.playFile('./resources/chgk/Signal_1.mp3',{seek:0,volume: 0.3,passes:1});
           dispatcher2.on("end", end => {
             timerId = setTimeout(function() {
-              connection.playFile('./resources/chgk/Signal_2.mp3');
+              connection.playFile('./resources/chgk/Signal_2.mp3',{seek:0,volume: 0.3,passes:1});
             }, 10 * 1000);
           });
         }, 80 * 1000);
@@ -77,25 +85,32 @@ client.on('message', message => {
           let img = files[Math.floor(Math.random()*files.length)];
           text_channel.send(`**Победила команда знатоков со счетом ${score_arr[0]}:${score_arr[1]}!**`, {files: [`./resources/chgk/win/${img}`]});
           send_score(score_arr);
-          connection.playFile('./resources/chgk/Dance_Macabre.mp3');
+          connection.playFile('./resources/chgk/Dance_Macabre.mp3',{seek:0,volume: 0.5,passes:1});
         });
       } else if (score_arr[1] == 6) {
         fs.readdir('./resources/chgk/lose/', (error, files) => {
           let img = files[Math.floor(Math.random()*files.length)];
           text_channel.send(`**Победила команда телезрителей со счетом ${score_arr[0]}:${score_arr[1]}!**`, {files: [`./resources/chgk/lose/${img}`]});
           send_score(score_arr);
-          connection.playFile('./resources/chgk/Dance_Macabre.mp3');
+          connection.playFile('./resources/chgk/Dance_Macabre.mp3',{seek:0,volume: 0.5,passes:1});
         });
       } else {
         fs.readdir('./resources/chgk/music/', (error, files) => {
           let mus = files[Math.floor(Math.random()*files.length)];
           send_score(score_arr);
-          connection.playFile(`./resources/chgk/music/${mus}`);
+          connection.playFile(`./resources/chgk/music/${mus}`,{seek:0,volume: 0.3,passes:1});
         });
       }
     } else if (/^(?:ё|`)$/.test(message.content)) {
-      connection.disconnect();
+      const dispatcher = connection.playFile('./resources/chgk/stop.mp3', {seek:0,volume: 1,passes:1});
+      //connection.disconnect();
       clearTimeout(timerId);
+     dispatcher.on('start', start => {
+       connection.player.streamingData.pausedTime = 0;
+    });
+      dispatcher.on('end', end => {
+       dispatcher.end();
+    });
     }
   }).catch(err => console.log(err));
 });
